@@ -1,0 +1,156 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+# FormForge - Android App Generator for Termux
+# Optimized for mobile terminal usage
+
+VERSION="1.0.0"
+FORMFORGE_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="$FORMFORGE_HOME/templates"
+LIB_DIR="$FORMFORGE_HOME/lib"
+
+# Colors for better mobile visibility
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+BOLD='\033[1m'
+
+# Load libraries
+source "$LIB_DIR/utils.sh"
+source "$LIB_DIR/generators.sh"
+source "$LIB_DIR/templates.sh"
+
+# Main menu
+show_menu() {
+    clear
+    echo -e "${BLUE}${BOLD}FormForge v$VERSION${NC}"
+    echo -e "${GREEN}Android App Generator for Termux${NC}"
+    echo ""
+    echo "1) 📱 Quick App (Basic template)"
+    echo "2) 🗂️ CRUD App (Database + Lists)"
+    echo "3) 🌐 API Client (REST + Retrofit)"
+    echo "4) 📝 Note Taking App"
+    echo "5) 🎮 Game Template"
+    echo "6) ⚙️  Custom (Advanced)"
+    echo "7) 📚 Templates Library"
+    echo "8) ❓ Help"
+    echo "9) 🚪 Exit"
+    echo ""
+    echo -n "Choose [1-9]: "
+}
+
+# Quick app generator
+generate_quick_app() {
+    echo -e "\n${BLUE}${BOLD}Quick App Generator${NC}"
+    echo -e "${YELLOW}Simple inputs - we'll handle the rest!${NC}\n"
+    
+    # Minimal inputs optimized for mobile
+    read -p "App name (e.g., MyApp): " app_name
+    app_name=${app_name:-MyApp}
+    
+    read -p "Package name (e.g., com.example): " package_name
+    package_name=${package_name:-com.example.myapp}
+    
+    echo ""
+    echo "Theme:"
+    echo "1) Material You (Dynamic colors)"
+    echo "2) Classic Material"
+    echo "3) Dark only"
+    read -p "Choose [1-3]: " theme_choice
+    
+    echo ""
+    echo "Main screen:"
+    echo "1) List view"
+    echo "2) Dashboard"
+    echo "3) Form"
+    echo "4) WebView"
+    read -p "Choose [1-4]: " screen_choice
+    
+    # Generate with smart defaults
+    generate_project "quick" "$app_name" "$package_name" "$theme_choice" "$screen_choice"
+}
+
+# CRUD app generator
+generate_crud_app() {
+    echo -e "\n${BLUE}${BOLD}CRUD App Generator${NC}"
+    echo -e "${YELLOW}Database-driven app with Create, Read, Update, Delete${NC}\n"
+    
+    read -p "App name: " app_name
+    app_name=${app_name:-CRUDApp}
+    
+    read -p "Package name: " package_name
+    package_name=${package_name:-com.example.crud}
+    
+    read -p "Entity name (e.g., Task, Note, Product): " entity_name
+    entity_name=${entity_name:-Item}
+    
+    echo ""
+    echo "Database:"
+    echo "1) Room (SQLite)"
+    echo "2) DataStore"
+    echo "3) Shared Preferences"
+    read -p "Choose [1-3]: " db_choice
+    
+    generate_project "crud" "$app_name" "$package_name" "$entity_name" "$db_choice"
+}
+
+# API client generator
+generate_api_client() {
+    echo -e "\n${BLUE}${BOLD}API Client Generator${NC}"
+    echo -e "${YELLOW}REST API client with Retrofit${NC}\n"
+    
+    read -p "App name: " app_name
+    read -p "Package name: " package_name
+    read -p "API base URL: " api_url
+    
+    echo ""
+    echo "Authentication:"
+    echo "1) None"
+    echo "2) API Key"
+    echo "3) Bearer Token"
+    echo "4) OAuth2"
+    read -p "Choose [1-4]: " auth_choice
+    
+    generate_project "api" "$app_name" "$package_name" "$api_url" "$auth_choice"
+}
+
+# Main loop
+main() {
+    # First run setup
+    if [ ! -f "$FORMFORGE_HOME/.configured" ]; then
+        setup_formforge
+    fi
+    
+    while true; do
+        show_menu
+        read choice
+        
+        case $choice in
+            1) generate_quick_app ;;
+            2) generate_crud_app ;;
+            3) generate_api_client ;;
+            4) generate_note_app ;;
+            5) generate_game_template ;;
+            6) custom_generator ;;
+            7) browse_templates ;;
+            8) show_help ;;
+            9) echo -e "\n${GREEN}Happy coding! 🚀${NC}"; exit 0 ;;
+            *) echo -e "\n${RED}Invalid choice${NC}"; sleep 1 ;;
+        esac
+        
+        if [[ $choice =~ ^[1-6]$ ]]; then
+            echo -e "\n${GREEN}✓ Project generated successfully!${NC}"
+            echo -e "Next steps:"
+            echo -e "1. cd $generated_path"
+            echo -e "2. git init && git add ."
+            echo -e "3. git commit -m 'Initial commit'"
+            echo -e "4. Push to GitHub for automatic build"
+            echo ""
+            read -p "Press Enter to continue..."
+        fi
+    done
+}
+
+# Run main
+main "$@"
