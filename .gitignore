@@ -1,0 +1,30 @@
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Generated projects (for testing)
+test_projects/
+generated/
+
+# User configuration
+.config/
+.formforge_config
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Backup files
+*.bak
+*.backup
