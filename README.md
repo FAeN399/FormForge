@@ -14,7 +14,7 @@ Generate complete Android apps directly from your phone's terminal!
 
 ```bash
 # Clone FormForge
-git clone https://github.com/yourusername/FormForge.git
+git clone https://github.com/FAeN399/FormForge.git
 cd FormForge
 
 # Make executable
